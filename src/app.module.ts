@@ -1,10 +1,21 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller.js';
-import { AppService } from './app.service.js';
+import { ConfigModule } from '@nestjs/config';
+import configuration from './config/configuration.js';
+import { validateEnv } from './config/env.validation.js';
+import { DatabaseModule } from './database/database.module.js';
+import { HealthModule } from './modules/health/health.module.js';
+import { UsersModule } from './modules/users/users.module.js';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+      validate: validateEnv,
+    }),
+    DatabaseModule,
+    HealthModule,
+    UsersModule,
+  ],
 })
 export class AppModule {}
