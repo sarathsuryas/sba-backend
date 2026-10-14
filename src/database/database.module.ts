@@ -18,7 +18,7 @@ import { DatabaseService } from './database.service.js';
     },
     DatabaseService,
   ],
-  exports: [DatabaseService],
+  exports: [PG_POOL, DatabaseService],
 })
 export class DatabaseModule implements OnApplicationShutdown {
   constructor(@Inject(PG_POOL) private readonly pool: Pool) {}

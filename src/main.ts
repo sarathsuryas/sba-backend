@@ -25,7 +25,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('SBA API')
-    .setDescription('SBA backend API')       
+    .setDescription('SBA backend API')
     .setVersion('0.0.1')
     .addBearerAuth()
     .build();

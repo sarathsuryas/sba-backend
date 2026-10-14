@@ -27,20 +27,19 @@ export class UsersController {
   async findAll(
     @Query() query: PaginationQueryDto,
   ): Promise<UserResponseDto[]> {
-    const users = await this.usersService.findAll(query);
-    return users.map((user) => UserResponseDto.from(user));
+    return this.usersService.findAll(query);
   }
 
   @Get(':id')
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<UserResponseDto> {
-    return UserResponseDto.from(await this.usersService.findOne(id));
+    return this.usersService.findOne(id);
   }
 
   @Post()
   async create(@Body() dto: CreateUserDto): Promise<UserResponseDto> {
-    return UserResponseDto.from(await this.usersService.create(dto));
+    return this.usersService.create(dto);
   }
 
   @Patch(':id')
@@ -48,7 +47,7 @@ export class UsersController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateUserDto,
   ): Promise<UserResponseDto> {
-    return UserResponseDto.from(await this.usersService.update(id, dto));
+    return this.usersService.update(id, dto);
   }
 
   @Delete(':id')
