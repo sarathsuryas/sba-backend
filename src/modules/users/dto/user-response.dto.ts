@@ -1,11 +1,16 @@
 import type { RoleName, User, UserStatus } from '../users.types.js';
 
 export class UserResponseDto {
+  /** @example 1 */
   id: string;
+  /** @example CUST000123 */
   customerId: string | null;
+  /** @example jane.doe@example.com */
   email: string;
+  /** @example active */
   status: UserStatus;
   roles: RoleName[];
+  /** @example false */
   mustChangePassword: boolean;
   lockedUntil: Date | null;
   lastLoginAt: Date | null;

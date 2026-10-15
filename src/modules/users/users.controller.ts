@@ -10,9 +10,18 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiNoContentResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto.js';
 import { ParseIdPipe } from '../../common/pipes/parse-id.pipe.js';
+import {
+  ApiAuth,
+  ApiErrors,
+} from '../../common/swagger/api-errors.decorator.js';
 import type { JwtPayload } from '../auth/auth.types.js';
 import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
@@ -21,14 +30,18 @@ import { UpdateUserDto } from './dto/update-user.dto.js';
 import { UserResponseDto } from './dto/user-response.dto.js';
 import { UsersService } from './users.service.js';
 
+const ID_PARAM = ApiParam({ name: 'id', description: 'User id', example: '1' });
+
 @ApiTags('users')
-@ApiBearerAuth()
 @Roles('admin', 'staff')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
+  @ApiOperation({ summary: 'List users', description: 'Newest first.' })
+  @ApiAuth('admin', 'staff')
+  @ApiErrors('badRequest')
   async findAll(
     @Query() query: PaginationQueryDto,
   ): Promise<UserResponseDto[]> {
@@ -37,6 +50,10 @@ export class UsersController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a user by id' })
+  @ID_PARAM
+  @ApiAuth('admin', 'staff')
+  @ApiErrors('badRequest', 'notFound')
   async findOne(
     @Param('id', ParseIdPipe) id: string,
   ): Promise<UserResponseDto> {
@@ -44,6 +61,14 @@ export class UsersController {
   }
 
   @Post()
+  @ApiOperation({
+    summary: 'Create a user',
+    description:
+      'Staff can create customers only; admins can create any role. ' +
+      'The new user must change the temporary password on first login.',
+  })
+  @ApiAuth('admin', 'staff')
+  @ApiErrors('badRequest', 'conflict')
   async create(
     @Body() dto: CreateUserDto,
     @CurrentUser() actor: JwtPayload,
@@ -52,6 +77,13 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @ApiOperation({
+    summary: 'Update a user',
+    description: 'Only the fields sent are changed.',
+  })
+  @ID_PARAM
+  @ApiAuth('admin', 'staff')
+  @ApiErrors('badRequest', 'notFound', 'conflict')
   async update(
     @Param('id', ParseIdPipe) id: string,
     @Body() dto: UpdateUserDto,
@@ -62,6 +94,14 @@ export class UsersController {
   @Delete(':id')
   @Roles('admin')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Delete a user',
+    description: 'Admins only. You cannot delete your own account.',
+  })
+  @ID_PARAM
+  @ApiAuth('admin')
+  @ApiErrors('badRequest', 'notFound')
+  @ApiNoContentResponse({ description: 'User deleted' })
   async remove(
     @Param('id', ParseIdPipe) id: string,
     @CurrentUser() actor: JwtPayload,

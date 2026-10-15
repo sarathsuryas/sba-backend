@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import { IsInt, IsOptional, Max, Min } from 'class-validator';
 
 export class PaginationQueryDto {
+  /** @example 20 */
   @IsOptional()
   @Type(() => Number)
   @IsInt()
@@ -9,6 +10,7 @@ export class PaginationQueryDto {
   @Max(100)
   limit: number = 20;
 
+  /** @example 0 */
   @IsOptional()
   @Type(() => Number)
   @IsInt()
