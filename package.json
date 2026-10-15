@@ -17,7 +17,8 @@
     "lint": "oxlint --type-aware src/",
     "migrate:up": "node-pg-migrate up -m db/migrations --envPath .env",
     "migrate:down": "node-pg-migrate down -m db/migrations --envPath .env",
-    "migrate:create": "node-pg-migrate create -m db/migrations -j sql"
+    "migrate:create": "node-pg-migrate create -m db/migrations -j sql",
+    "seed": "node --env-file=.env src/database/seeds/seed-admins.ts"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",
@@ -25,6 +26,7 @@
     "@nestjs/core": "^12.0.1",
     "@nestjs/platform-express": "^12.0.1",
     "@nestjs/swagger": "^12.0.2",
+    "bcryptjs": "^3.0.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "pg": "^8.23.1",
