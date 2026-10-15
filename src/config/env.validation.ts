@@ -5,6 +5,7 @@ import {
   IsString,
   Max,
   Min,
+  MinLength,
   validateSync,
 } from 'class-validator';
 
@@ -22,6 +23,14 @@ class EnvironmentVariables {
   @IsInt()
   @Min(1)
   DB_POOL_MAX?: number;
+
+  @IsString()
+  @MinLength(32)
+  JWT_SECRET: string;
+
+  @IsOptional()
+  @IsString()
+  JWT_EXPIRES_IN?: string;
 }
 
 // Fails fast at startup when required env vars are missing or malformed.
