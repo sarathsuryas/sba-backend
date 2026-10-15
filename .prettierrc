@@ -1,4 +1,14 @@
 {
   "singleQuote": true,
-  "trailingComma": "all"
+  "trailingComma": "all",
+  "plugins": ["prettier-plugin-sql"],
+  "overrides": [
+    {
+      "files": "*.sql",
+      "options": {
+        "language": "postgresql",
+        "keywordCase": "upper"
+      }
+    }
+  ]
 }
